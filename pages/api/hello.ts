@@ -5,7 +5,13 @@ type Data = {
 }
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-    res.status(200).json({name: 'John Doe'})
+
+    console.log( req.cookies )    // para obtener las cookies en la restfullapi
+
+    res.status(200).json({
+        name: 'John Doe',
+        ...req.cookies
+    })
 }
 
 

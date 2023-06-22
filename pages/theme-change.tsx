@@ -1,8 +1,16 @@
-import { ChangeEvent, useState } from "react";
-import Layout from "@/components/layouts"
-import { Card,  CardContent, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+import { ChangeEvent, FC, useEffect, useState } from "react";
+import { GetServerSideProps } from 'next'
 
-const ThemeChangePage = () => {
+import Layout from "@/components/layouts"
+import { Button, Card,  CardContent, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio } from "@mui/material";
+
+import Cookies from "js-cookie";
+import axios from "axios";
+
+
+const ThemeChangePage: FC = ( props ) => {
+
+    console.log({props})
 
     const [currentTheme, setCurrentTheme] = useState('light'); 
 
@@ -12,9 +20,25 @@ const ThemeChangePage = () => {
         console.log({ selectedTheme })
 
         setCurrentTheme( selectedTheme )
-    
+
+        localStorage.setItem("theme", selectedTheme)
+        Cookies.set('themeCookie', selectedTheme)
+
     }
 
+    const onClickAxios = async () => {
+        const resp = await axios.get('/api/hello')
+
+        console.log(resp.data)
+
+    }
+
+
+    useEffect(() => {
+        console.log( 'LocalStorage:', localStorage.getItem('theme'))
+        console.log( 'Cookies:', Cookies.get('themeCookie'))    // otra manera de leer la cookies y no depende de que el servidor envie la cookie
+    }, [])
+    
 
     return (
     <Layout>
@@ -31,11 +55,33 @@ const ThemeChangePage = () => {
                         <FormControlLabel value='custom' control={ <Radio/> } label='Custom'/>
                     </RadioGroup>
                 </FormControl>
+
+                <Button
+                    onClick={ onClickAxios }
+                >
+                    Solicitud
+                </Button>
+
             </CardContent>
         </Card>
 
     </Layout>
   )
+}
+
+
+// aqui enviamos la cookie bajo request time bajo demanda 
+// export const getServerSideProps: GetServerSideProps = async ({req}) => {     ->  puedo destructurar
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+
+    const { themeCookie = 'light', name = 'No name' } = ctx.req.cookies
+
+    return {
+        props: {
+            themeCookie,
+            name
+        }
+    }
 }
 
 export default ThemeChangePage
