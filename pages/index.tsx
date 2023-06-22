@@ -1,7 +1,9 @@
-
+import { Typography } from "@mui/material"
 
 export default function Home() {
   return (
-    <h1>Cookie Master</h1>
+      <Typography>
+          Cookie Master
+      </Typography>
   )
 }
