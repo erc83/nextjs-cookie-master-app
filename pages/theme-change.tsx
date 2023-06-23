@@ -7,12 +7,15 @@ import { Button, Card,  CardContent, FormControl, FormLabel, RadioGroup, FormCon
 import Cookies from "js-cookie";
 import axios from "axios";
 
+interface Props {
+    themeCookie: string;
+}
 
-const ThemeChangePage: FC = ( props ) => {
-
-    console.log({props})
-
-    const [currentTheme, setCurrentTheme] = useState('light'); 
+const ThemeChangePage: FC<Props> = ( { themeCookie } ) => {
+    // const ThemeChangePage = ( { themeCookie }: Props ) => { 
+    // console.log({ themeCookie })
+    // const [currentTheme, setCurrentTheme] = useState('light'); 
+    const [currentTheme, setCurrentTheme] = useState( themeCookie ); 
 
     const onThemeChange = ( event: ChangeEvent<HTMLInputElement> ) => {
         const selectedTheme = event.target.value
@@ -33,13 +36,11 @@ const ThemeChangePage: FC = ( props ) => {
 
     }
 
-
     useEffect(() => {
         console.log( 'LocalStorage:', localStorage.getItem('theme'))
         console.log( 'Cookies:', Cookies.get('themeCookie'))    // otra manera de leer la cookies y no depende de que el servidor envie la cookie
     }, [])
     
-
     return (
     <Layout>
         <Card>
@@ -69,16 +70,17 @@ const ThemeChangePage: FC = ( props ) => {
   )
 }
 
-
 // aqui enviamos la cookie bajo request time bajo demanda 
 // export const getServerSideProps: GetServerSideProps = async ({req}) => {     ->  puedo destructurar
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
     const { themeCookie = 'light', name = 'No name' } = ctx.req.cookies
 
+    const validThemes = [ 'light', 'dark', 'custom']; 
+
     return {
         props: {
-            themeCookie,
+            themeCookie: validThemes.includes( themeCookie) ? themeCookie : 'light', 
             name
         }
     }
