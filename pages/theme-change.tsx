@@ -20,7 +20,7 @@ const ThemeChangePage: FC<Props> = ( { themeCookie } ) => {
     const onThemeChange = ( event: ChangeEvent<HTMLInputElement> ) => {
         const selectedTheme = event.target.value
     
-        console.log({ selectedTheme })
+        // console.log({ selectedTheme })
 
         setCurrentTheme( selectedTheme )
 
@@ -31,14 +31,13 @@ const ThemeChangePage: FC<Props> = ( { themeCookie } ) => {
 
     const onClickAxios = async () => {
         const resp = await axios.get('/api/hello')
-
-        console.log(resp.data)
-
+        location.reload()
+        // console.log(resp.data)
     }
 
     useEffect(() => {
-        console.log( 'LocalStorage:', localStorage.getItem('theme'))
-        console.log( 'Cookies:', Cookies.get('themeCookie'))    // otra manera de leer la cookies y no depende de que el servidor envie la cookie
+        // console.log( 'LocalStorage:', localStorage.getItem('theme'))
+        // console.log( 'Cookies:', Cookies.get('themeCookie'))    // otra manera de leer la cookies y no depende de que el servidor envie la cookie
     }, [])
     
     return (
